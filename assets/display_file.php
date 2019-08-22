@@ -17,13 +17,20 @@
         public $originalName;
         public $ext;
         public $nameForLink;
+        public $size;
     }
 
     $url = $_SERVER['REQUEST_URI'];
     $isFound = false;
+    // files & db to delete
     checkFilesToDelete();
     $prepare = $pdo->prepare(
-      'DELETE FROM files_info WHERE createdAt < NOW() - INTERVAL 15 DAY'
+      "
+        DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1 DAY AND expiration = '24hrs'
+        DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2 DAY AND expiration = '2j'
+        DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7 DAY AND expiration = '1s'
+        DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14 DAY AND expiration = '2s'
+      "
     );
     $prepare->execute();
     $directory = './uploads/24hrs';
@@ -35,7 +42,7 @@
     $directory = './uploads/2s';
     $scanned_directory_3= array_diff(scandir($directory), array('..', '.'));
 
-    $replaced = str_replace('/innocean_file_sharing/page?=', '', $url);
+    $replaced = str_replace('/ouelinte/page?=', '', $url);
     $fileNameToDownload = str_replace('/', '', $replaced);
 
     $fileNameToDownload = encrypt_decrypt('decrypt', $fileNameToDownload);
@@ -59,12 +66,13 @@
         $thisFile = new File(); 
 
         $prepare = $pdo->prepare(
-            'SELECT * FROM files_info WHERE firstFileName = :firstFileName'
+            'SELECT * FROM datafiles WHERE firstFileName = :firstFileName'
         );
         $prepare->bindValue('firstFileName', $fileNameToDownloadHashed);
         $prepare->execute();
         $row = $prepare->fetch();
         $fileOriginalName = $row->secondFileName;
+        $thisFile->size = $row->size;
         $thisFile->ext = $row->ext;
         $thisFile->originalName = encrypt_decrypt('decrypt',$fileOriginalName);
     

@@ -4,9 +4,15 @@ include 'config.php';
 include 'functions.php';
 $_SESSION['previous_location'] = 'post';
 $error = '';
+// files & db to delete
 checkFilesToDelete();
 $prepare = $pdo->prepare(
-  'DELETE FROM files_info WHERE createdAt < NOW() - INTERVAL 15 DAY'
+  "
+    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1 DAY AND expiration = '24hrs'
+    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2 DAY AND expiration = '2j'
+    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7 DAY AND expiration = '1s'
+    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14 DAY AND expiration = '2s'
+  "
 );
 $prepare->execute();
 $fileNameForLink = 'notset';
@@ -14,6 +20,7 @@ if(isset($_POST['upload'])) {
   $_SESSION['ext'] = array();
   $file = $_FILES['file'];
   $numberOfDays = $_POST['numberOfDays'];
+  
   $_SESSION['old'] = $numberOfDays;
   $arrayFiles = reArrayFiles($file);
   $_SESSION['access'] = array();
@@ -32,7 +39,6 @@ if(isset($_POST['upload'])) {
     $fileSize = $arrayFiles[$i]['size'];
     $fileError = $arrayFiles[$i]['error'];
     $fileType = $arrayFiles[$i]['type'];
-    
     
     $fileExt = explode('.', $fileName);
     $fileActualExt = strtolower(end($fileExt));
@@ -60,11 +66,13 @@ if(isset($_POST['upload'])) {
           if ($i == count($arrayFiles)-1) {
             for ($j=0; $j < count($arrayFiles); $j++) { 
               $prepare = $pdo->prepare(
-                'INSERT INTO files_info (firstFileName, secondFileName, ext, createdAt) VALUES (:firstFileName, :secondFileName, :ext, CURRENT_DATE())'
+                'INSERT INTO datafiles (firstFileName, secondFileName, ext, createdAt, expiration, size) VALUES (:firstFileName, :secondFileName, :ext, CURRENT_DATE(), :expiration, :size)'
               );
               $prepare->bindValue('firstFileName', $filesEnc[$j]);
               $prepare->bindValue('secondFileName', $filesOriginalNames[$j]);
               $prepare->bindValue('ext', $filesActualExts[$j]);
+              $prepare->bindValue('expiration', $numberOfDays);
+              $prepare->bindValue('size', $_SESSION['fileSize'][$j]);
               $prepare->execute();
               if ($j > 0 && $j == count($arrayFiles)-1) {
                 $destination = '../uploads/'.$numberOfDays;

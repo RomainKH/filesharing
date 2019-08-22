@@ -5,8 +5,7 @@
   $fileNameNoExt = $_SESSION['name'];
   if ($fileNameForLink == null) {
     unset($_SESSION['previous_location']);
-    $_SESSION['error'] = "La session a expiré";
-    header('location: ./');
+    header('location: ./page?=notfound');
     exit;
   }
 ?>
@@ -47,17 +46,19 @@
                                   <?php
                                   $num = $_SESSION['fileSize'][$i];
                                   $numlength = strlen((string)$num);
-                                  if ($numlength <= 6) {
-                                    echo round($_SESSION['fileSize'][$i]/1000).' Kb';
+                                  if ($numlength < 4) {
+                                    echo '0,'.$num.' Kb';
+                                  } else if ($numlength <= 6) {
+                                    echo round($num/1000).' Kb';
                                   } else if ($numlength >= 7) {
-                                    echo round($_SESSION['fileSize'][$i]/1000000).' Mb';
+                                    echo round($num/1000000).' Mb';
                                   }
                                   ?>
                                 </small>
                               </div>
                             </div>
                             <div class="rename__file">
-                              <button id="button<?=$i?>" type="button">Renommer</button>
+                              <button id="button<?=$i?>" type="button" onclick="updateLocalData(1000)">Renommer</button>
                             </div>
                           </div>
                         <?php } ?>
@@ -73,27 +74,39 @@
         </div>
     </div>
     <script>
-      let localData = localStorage.getItem('theLinksCreated')
-      if (localData != undefined || localData != null) {
-        localData = JSON.parse(localData)
-        let doubloon = false
-        for (let i = 0; i < localData.length; i++) {
-          if(localData[i].link == 'http://localhost:8888/innocean_file_sharing/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>') {
-            doubloon = true
-            localData[i].name = '<?= $fileNameNoExt[0] ?>'
+    const updateLocalData = (howMuchTime) => {
+      setTimeout(() => {
+        let localData = localStorage.getItem('theLinksCreated')
+        if (localData != undefined || localData != null) {
+          localData = JSON.parse(localData)
+          let doubloon = false
+          for (let i = 0; i < localData.length; i++) {
+
+            if(localData[i].link == 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>') {
+              doubloon = true
+              let renamedFile = document.querySelectorAll('.flex__multiples .block__file div > div input')
+              let allNames = ''
+              for (let v = 0; v < renamedFile.length; v++) {
+                allNames += `${renamedFile[v].placeholder} `
+              }
+              localData[i].name = allNames
+              localStorage.setItem('theLinksCreated', JSON.stringify(localData))
+            }
           }
-        }
-        if (doubloon == false) {
-          let objLink = {link : 'http://localhost:8888/innocean_file_sharing/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+          if (doubloon == false) {
+            let objLink = {link : 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+            localData.push(objLink)
+            localStorage.setItem('theLinksCreated', JSON.stringify(localData))
+          }
+        } else {
+          localData = new Array()
+          let objLink = {link : 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
           localData.push(objLink)
           localStorage.setItem('theLinksCreated', JSON.stringify(localData))
         }
-      } else {
-        localData = new Array()
-        let objLink = {link : 'http://localhost:8888/innocean_file_sharing/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
-        localData.push(objLink)
-        localStorage.setItem('theLinksCreated', JSON.stringify(localData))
-      }
+      }, howMuchTime)
+    }
+    updateLocalData(0)
     </script>
     <div class="access__file">
       <h3>Partagez le(s) fichier(s) :</h3>
@@ -105,7 +118,7 @@
         </div>
         <!-- LIENS DYNAMIQUE A METTRE A JOUR EN FONCTION DE L'ADRESSE SERVER -->
         <div class="cta__link">
-          <input type="text" value="http://localhost:8888/innocean_file_sharing/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>" id="linkShare">
+          <input type="text" value="http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>" id="linkShare">
           <button class="blue__btn" onclick="copyLink()">Copier le lien de téléchargement</button> 
           <div>
             <input id="checkdl" type="checkbox">

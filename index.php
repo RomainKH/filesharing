@@ -1,11 +1,29 @@
 <?php
   include './assets/config.php';
+  include './assets/functions.php';
   $_SESSION['previous_location'] = 'homepage';
   if (isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0') {
       unset($_SESSION['error']);
-  } else {
-    $_SESSION['intern'] = $_SESSION['error'];
   }
+
+  // files & db to delete
+  checkFilesToDelete();
+  $prepare = $pdo->prepare(
+    "
+      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1 DAY AND expiration = '24hrs'
+      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2 DAY AND expiration = '2j'
+      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7 DAY AND expiration = '1s'
+      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14 DAY AND expiration = '2s'
+    "
+  );
+  $prepare->execute();
+  
+  // check ip if is intern to innocean or not
+  //$allowedIps = ['192.168.70.97', '192.168.70.255', '192.168.70.102'];
+  //$userIp = $_SERVER['REMOTE_ADDR'];
+  //if (!in_array($userIp, $allowedIps)) {
+  //    exit('Unauthorized');
+  //}   
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,12 +52,26 @@
                         <polyline points="13 2 13 9 20 9"></polyline>
                     </svg>
                     <div class="select__container">
-                        <select class="number__days" name="numberOfDays" size="4">
-                            <option value="24hrs" selected="selected">1 jour</option>
-                            <option value="2j">2 jours</option>
-                            <option value="1s">7 jours</option>
-                            <option value="2s">14 jours</option>
-                        </select>
+                        <label class="container"> 
+                          <p>1 jour</p>
+                          <input type="radio" checked="checked" value="24hrs" name="numberOfDays">
+                          <span class="checkmark">1 jour</span>
+                        </label>
+                        <label class="container">
+                          <p>2 jours</p>
+                          <input type="radio" value="2j" name="numberOfDays">
+                          <span class="checkmark">2 jours</span>
+                        </label>
+                        <label class="container">
+                          <p>7 jours</p>
+                          <input type="radio" value="1s" name="numberOfDays">
+                          <span class="checkmark">7 jours</span>
+                        </label>
+                        <label class="container">
+                          <p>14 jours</p>
+                          <input type="radio" value="2s" name="numberOfDays">
+                          <span class="checkmark"> 14 jours</span>
+                        </label>
                     </div>
                     <div class="progress__container">
                         <span></span>
@@ -55,7 +87,7 @@
                         <mark>Innocean</mark>, et téléchargeable
                         <mark>pour tout le monde.</mark>
                     </p>
-                    <span>Le liens de partage expirera après :</span>
+                    <span>Le lien de partage expirera après :</span>
                 </div>
             </div>
             <div class="block block__links">
@@ -95,9 +127,9 @@
             </svg>
             <div class="text">
                 <h5>Une erreur est survenue</h5>
-                <span><?= $_SESSION['intern'] ?></span>
+                <span><?= $_SESSION['error'] ?></span>
             </div>
-            <button class="close__error" onclick="deleteError()"></button>
+            <button class="close__error cross__delete"></button>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>

@@ -13,9 +13,7 @@ const form = document.querySelector('form'),
 
 const uploadFile = () => {
   let file = input__file__in.files[0]
-  for (let i = 0; i < file.length; i++) {
-        
-  }
+
   let formdata = new FormData()
   formdata.append("file", file)
   let ajax = new XMLHttpRequest()
@@ -54,7 +52,7 @@ window.addEventListener('load', () => {
     error__span.style.transform = 'translateX(-50%) scale(1)'
   }
 })
-let btn__error = error__span.querySelector('button')
+let btn__error = error__span.querySelector('.close__error.cross__delete')
 btn__error.addEventListener('click', () => {
   error__span.style.opacity = 0
   setTimeout(() => {
@@ -107,7 +105,7 @@ deleteAll.addEventListener('click', () => {
   }
 })
 
-const uniqueDelete = document.querySelectorAll('button.cross__delete')
+const uniqueDelete = document.querySelectorAll('.link > button.cross__delete')
 for (let i = 0; i < uniqueDelete.length; i++) {
   uniqueDelete[i].addEventListener('click', () => {
     let localData = localStorage.getItem('theLinksCreated')
@@ -160,4 +158,50 @@ const filesSize = () => {
       error__filesize.style.display = 'none'
     }, 600)
   }
+}
+
+const blockDl = document.querySelector('.block.block__links'),
+      whereLinksAre = blockDl.querySelectorAll('.simplebar-content-wrapper .simplebar-content > .link')
+
+if (whereLinksAre.length > 0) {
+  blockDl.style.opacity = 1
+} else {
+  blockDl.remove()
+}
+
+
+const rename__ct = document.querySelectorAll('.block.block__links .link__list .link'),
+      rename__btn = document.querySelectorAll('.block.block__links .link__list .link > span + button')
+
+for (let xy = 0; xy < rename__btn.length; xy++) {
+  rename__btn[xy].addEventListener('click', () => {
+    rename__btn[xy].style.opacity = 0
+    rename__btn[xy].setAttribute('disabled', 'true')
+    rename__btn[xy].style.transform = 'translateY(-50%)'
+    const validate = document.createElement('div')
+    validate.classList.add('confirm__picto')
+    validate.innerHTML = 'copié'
+    validate.classList.add('on__home')
+    rename__ct[xy].appendChild(validate)
+    validate.style.transform = 'translateY(50%)'
+    setTimeout(() => {
+      validate.style.opacity = 1
+      validate.style.transform = 'translateY(0%)'
+    }, 200)
+    setTimeout(() => {
+      rename__btn[xy].style.display = 'none'
+      rename__btn[xy].style.transform = 'translateY(50%)'
+    }, 401)
+    setTimeout(() => {
+      validate.style.opacity = 0
+      validate.style.transform = 'translateY(-50%)'
+      rename__btn[xy].style.display = 'block'
+    }, 801)
+    setTimeout(() => {
+      rename__btn[xy].style.opacity = 1
+      rename__btn[xy].style.transform = 'translateY(0%)'
+      validate.remove()
+      rename__btn[xy].removeAttribute('disabled')
+    }, 901);
+  })
 }

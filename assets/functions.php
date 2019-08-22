@@ -26,20 +26,20 @@
 
   function checkFilesToDelete() {
     delete_older_than('./uploads/24hrs', 3600*24);
-    delete_older_than('uploads/2j', 3600*24*2);
+    delete_older_than('./uploads/2j', 3600*24*2);
     delete_older_than('./uploads/1s', 3600*24*7);
     delete_older_than('./uploads/2s', 3600*24*14);
   }
 
   function encrypt_decrypt($action, $string) {
     $output = false;
-    $encrypt_method = "AES-256-CBC";
+    $encrypt_method = "cast5-cbc";
     $secret_key = 'Thi@s#8is*my-sec%£9ret)k5§ey';
     $secret_iv = 'T%^$&mhis^mm^&03is39§mysecretiv';
     // hash
-    $key = hash('adler32', $secret_key);
-    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-    $iv = substr(hash('adler32', $secret_iv), 0, 16);
+    $key = hash('crc32', $secret_key);
+    // iv
+    $iv = substr(hash('crc32', $secret_iv), 0, 16);
     if ( $action == 'encrypt' ) {
         $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
         $output = base64_encode($output);

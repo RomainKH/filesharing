@@ -13,7 +13,7 @@
     $uniqEnc = hash('ripemd160',$uniqName.$index);
     
     $prepare = $pdo->prepare(
-        'UPDATE files_info SET secondFileName = :secondFileName WHERE firstFileName = :firstFileName'
+        'UPDATE datafiles SET secondFileName = :secondFileName WHERE firstFileName = :firstFileName'
     );
     $prepare->bindValue('secondFileName', $newNameEnc);
     $prepare->bindValue('firstFileName', $uniqEnc);
@@ -27,7 +27,9 @@
         array_push($realNames, $_SESSION['name'][$i].'.'.$_SESSION['ext'][$i]);
     }
     
-    zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
-    $deleteZip = '../uploads/'.$old.'/'.$_SESSION['access'][0].'.zip';
-    unlink($deleteZip);
-    zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
+    if (count($everyFilesName) > 1) {
+        zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
+        $deleteZip = '../uploads/'.$old.'/'.$_SESSION['access'][0].'.zip';
+        unlink($deleteZip);
+        zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
+    }
