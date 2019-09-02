@@ -1,4 +1,5 @@
 <?php
+  include './assets/setup.php';
   include './assets/config.php';
   include './assets/functions.php';
   $fileNameForLink = $_SESSION['access'][0];
@@ -44,15 +45,15 @@
                                 <input onClick="this.setSelectionRange(0, this.value.length)" type="text" class="file__name" name="file__name" placeholder="<?= $fileNameNoExt[$i] ?>" value="<?= $fileNameNoExt[$i] ?>" />
                                 <small>
                                   <?php
-                                  $num = $_SESSION['fileSize'][$i];
-                                  $numlength = strlen((string)$num);
-                                  if ($numlength < 4) {
-                                    echo '0,'.$num.' Kb';
-                                  } else if ($numlength <= 6) {
-                                    echo round($num/1000).' Kb';
-                                  } else if ($numlength >= 7) {
-                                    echo round($num/1000000).' Mb';
-                                  }
+                                    $num = $_SESSION['fileSize'][$i];
+                                    $numlength = strlen((string)$num);
+                                    if ($numlength < 4) {
+                                      echo '0,'.$num.' Kb';
+                                    } else if ($numlength <= 6) {
+                                      echo round($num/1000).' Kb';
+                                    } else if ($numlength >= 7) {
+                                      echo round($num/1000000).' Mb';
+                                    }
                                   ?>
                                 </small>
                               </div>
@@ -82,7 +83,7 @@
           let doubloon = false
           for (let i = 0; i < localData.length; i++) {
 
-            if(localData[i].link == 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>') {
+            if(localData[i].link == '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>') {
               doubloon = true
               let renamedFile = document.querySelectorAll('.flex__multiples .block__file div > div input')
               let allNames = ''
@@ -94,13 +95,13 @@
             }
           }
           if (doubloon == false) {
-            let objLink = {link : 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+            let objLink = {link : '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
             localData.push(objLink)
             localStorage.setItem('theLinksCreated', JSON.stringify(localData))
           }
         } else {
           localData = new Array()
-          let objLink = {link : 'http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+          let objLink = {link : '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
           localData.push(objLink)
           localStorage.setItem('theLinksCreated', JSON.stringify(localData))
         }
@@ -118,7 +119,7 @@
         </div>
         <!-- LIENS DYNAMIQUE A METTRE A JOUR EN FONCTION DE L'ADRESSE SERVER -->
         <div class="cta__link">
-          <input type="text" value="http://localhost:8888/ouelinte/page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>" id="linkShare">
+          <input type="text" value="<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>" id="linkShare">
           <button class="blue__btn" onclick="copyLink()">Copier le lien de téléchargement</button> 
           <div>
             <input id="checkdl" type="checkbox">

@@ -47,18 +47,20 @@ const abortHandler = () => {
 }
 
 window.addEventListener('load', () => {
-  if (txt__error.innerHTML !== null && txt__error.innerHTML !== '') {
+  if (txt__error != undefined && txt__error.innerHTML !== null && txt__error.innerHTML !== '') {
     error__span.style.transition = '.6s cubic-bezier(0,.9,.44,1.15)'
     error__span.style.transform = 'translateX(-50%) scale(1)'
   }
 })
-let btn__error = error__span.querySelector('.close__error.cross__delete')
-btn__error.addEventListener('click', () => {
-  error__span.style.opacity = 0
-  setTimeout(() => {
-    error__span.remove()
-  }, 600)
-})
+if (error__span != undefined) {
+  let btn__error = error__span.querySelector('.close__error.cross__delete')
+  btn__error.addEventListener('click', () => {
+    error__span.style.opacity = 0
+    setTimeout(() => {
+      error__span.remove()
+    }, 600)
+  })
+}
 
 let local = localStorage.getItem('theLinksCreated'),
     whereToPutLinkIn = document.querySelector('.simplebar-content')

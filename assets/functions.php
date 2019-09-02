@@ -25,10 +25,10 @@
   }
 
   function checkFilesToDelete() {
-    delete_older_than('./uploads/24hrs', 3600*24);
-    delete_older_than('./uploads/2j', 3600*24*2);
-    delete_older_than('./uploads/1s', 3600*24*7);
-    delete_older_than('./uploads/2s', 3600*24*14);
+    delete_older_than('../uploads/24hrs', 3600*24);
+    delete_older_than('../uploads/2j', 3600*24*2);
+    delete_older_than('../uploads/1s', 3600*24*7);
+    delete_older_than('../uploads/2s', 3600*24*14);
   }
 
   function encrypt_decrypt($action, $string) {

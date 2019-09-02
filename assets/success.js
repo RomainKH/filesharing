@@ -1,6 +1,5 @@
 const input__rename = document.querySelectorAll('.file__name'),
       link = document.querySelector('.link__download'),
-      //link__share = document.querySelector('.link__download + input + button'),
       block__file = document.querySelectorAll('.block__file')
 
 const copyLink = () => {
@@ -21,34 +20,8 @@ for (let k = 0; k < block__file.length; k++) {
       })
     })
   })
-  /*
-  document.addEventListener('DOMContentLoaded', function() {
-    let btn = document.querySelector(`#button${k}`)
-    btn.addEventListener('click', () => {
-      var httpRequest = new XMLHttpRequest()
-      httpRequest.onreadystatechange = function () {
-        if (httpRequest.readyState == 4 ) {
-          console.log(httpRequest.responseText)
-          input__rename[k].placeholder = httpRequest.responseText
-          console.log(httpRequest)
-        }
-      } 
-      httpRequest.open('POST', './assets/rename.php', true)
-      httpRequest.setRequestHeader('Content-Type', 'text/xml')
-      httpRequest.send({name: link.id, newNameFile: input__rename[k].value, index: block__file[k].id})
-    })
-  })
-  */
 }
 
-window.addEventListener('load', () => {
-    //link.style.transform = `translate(-50%, -50%)`
-    //link__share.style.transform = `translate(-50%, -50%)`
-    //link.style.zIndex = `1`
-    //link.style.opacity = `1`
-    //link__share.style.zIndex = `1`
-    //link__share.style.opacity = `1`
-})
 let background__mail__div = 0
 const btn__mail = document.querySelector('.cta__links > button.white__btn')
 btn__mail.addEventListener('click', () => {
@@ -147,16 +120,13 @@ $(document).ready(function () {
 
 const checkbox__autodl = document.querySelector('#checkdl')
 checkbox__autodl.addEventListener('click', () => {
-  let linkText = document.querySelector('#linkShare'),
-      linkAccess = document.querySelector('.cta__links > .link__download.white__btn')
+  let linkText = document.querySelector('#linkShare')
   if (checkbox__autodl.classList.contains('active')) {
     checkbox__autodl.classList.remove('active')
     linkText.value = linkText.value.replace('&download','')
-    linkAccess.href = linkAccess.href.replace('&download','')
   } else {
     checkbox__autodl.classList.add('active')
     linkText.value = `${linkText.value}&download`
-    linkAccess.href = `${linkAccess.href}&download`
   }
 })
 

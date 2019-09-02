@@ -6,24 +6,31 @@
       unset($_SESSION['error']);
   }
 
+  $arrayIp = array();
+  foreach (range(0, 255) as $number) {
+    $arrayIp[] = '192.168.70.0';
+  }
   // files & db to delete
   checkFilesToDelete();
   $prepare = $pdo->prepare(
-    "
-      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1 DAY AND expiration = '24hrs'
-      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2 DAY AND expiration = '2j'
-      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7 DAY AND expiration = '1s'
-      DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14 DAY AND expiration = '2s'
-    "
+    " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1.5 DAY AND expiration = '24hrs' "
+  );
+  $prepare->execute();
+  $prepare = $pdo->prepare(
+    " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2.5 DAY AND expiration = '2j' "
+  );
+  $prepare->execute();
+  $prepare = $pdo->prepare(
+    " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7.5 DAY AND expiration = '1s' "
+  );
+  $prepare->execute();
+  $prepare = $pdo->prepare(
+    " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14.5 DAY AND expiration = '2s' "
   );
   $prepare->execute();
   
   // check ip if is intern to innocean or not
-  //$allowedIps = ['192.168.70.97', '192.168.70.255', '192.168.70.102'];
-  //$userIp = $_SERVER['REMOTE_ADDR'];
-  //if (!in_array($userIp, $allowedIps)) {
-  //    exit('Unauthorized');
-  //}   
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -120,6 +127,7 @@
                 </div>
             </div>
         </div>
+        <?php if (isset($_SESSION['error'])) { ?>
         <div class="error__msg">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="file__icon">
                 <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
@@ -127,10 +135,13 @@
             </svg>
             <div class="text">
                 <h5>Une erreur est survenue</h5>
-                <span><?= $_SESSION['error'] ?></span>
+                <span>
+                    <?= $_SESSION['error'] ?>    
+                </span>
             </div>
             <button class="close__error cross__delete"></button>
         </div>
+        <?php } ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
     <script src="./assets/index.js"></script>

@@ -7,14 +7,22 @@ $error = '';
 // files & db to delete
 checkFilesToDelete();
 $prepare = $pdo->prepare(
-  "
-    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1 DAY AND expiration = '24hrs'
-    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2 DAY AND expiration = '2j'
-    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7 DAY AND expiration = '1s'
-    DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14 DAY AND expiration = '2s'
-  "
+  " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 1.5 DAY AND expiration = '24hrs' "
 );
 $prepare->execute();
+$prepare = $pdo->prepare(
+  " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 2.5 DAY AND expiration = '2j' "
+);
+$prepare->execute();
+$prepare = $pdo->prepare(
+  " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 7.5 DAY AND expiration = '1s' "
+);
+$prepare->execute();
+$prepare = $pdo->prepare(
+  " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14.5 DAY AND expiration = '2s' "
+);
+$prepare->execute();
+
 $fileNameForLink = 'notset';
 if(isset($_POST['upload'])) {
   $_SESSION['ext'] = array();
