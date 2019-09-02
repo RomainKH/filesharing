@@ -9,6 +9,7 @@
     unset($_SESSION['old']);
     unset($_SESSION['ext']);
     unset($_SESSION['fileSize']);
+    unset($_SESSION['id']);
     session_destroy();
 
     // setup template obj files
@@ -51,61 +52,70 @@
     $directory = './uploads/2s';
     $scanned_directory_3= array_diff(scandir($directory), array('..', '.'));
 
-    $replaced = str_replace($path.'page?=', '', $url);
+    $replaced = str_replace($path.'d?=', '', $url);
     $access = true;
     if ($replaced == 'notfound') {
         $access = false;
     }
     if ($access == true) {
-        $fileNameToDownload = encrypt_decrypt('decrypt', $replaced);
-        $indexes = explode('&', $fileNameToDownload);
-        $multipleFilesName = array();
+        $indexes = str_split($replaced, 8);
         $filesNameHashed = array();
         if ($indexes[0] != '') {
-            if ($indexes[1] > 0) {
-                for ($y=0; $y <= $indexes[1]; $y++) { 
-                    $multipleFilesName[$y] = $indexes[0].'__'.$y;
+            $arrayOfFiles = array();
+            $prepare = $pdo->prepare(
+                'SELECT id FROM datafiles ORDER BY id DESC LIMIT 1'
+            );
+            $prepare->execute();
+            $row = $prepare->fetch();
+            $firstIdOfFiles = false;
+            for ($w=0; $w <= $row->id; $w++) { 
+                $prepare = $pdo->prepare(
+                    'SELECT * FROM datafiles WHERE id = :id'
+                );
+                $prepare->bindValue('id', $w);
+                $prepare->execute();
+                $one = $prepare->fetch(PDO::FETCH_OBJ);
+                if (isset($one->id)) {
+                    if (hash('crc32b',$one->id) == $indexes[0]) {
+                        $firstIdOfFiles = $w;
+                    }
                 }
             }
-            else {
-                $multipleFilesName[0] = $indexes[0].'__'.$indexes[1];
-            }
-            $arrayOfFiles = array();
-            foreach ($multipleFilesName as $file) {
-                $fileNameToDownloadHashed = hash('ripemd160', $file);
-                $thisFile = new File(); 
+            for ($q=0; $q <= $indexes[1]; $q++) { 
                 $prepare = $pdo->prepare(
-                    'SELECT * FROM datafiles WHERE firstFileName = :firstFileName'
+                    'SELECT * FROM datafiles WHERE id = :id'
                 );
-                $prepare->bindValue('firstFileName', $fileNameToDownloadHashed);
+                $thisId = $firstIdOfFiles + $q;
+                $prepare->bindValue('id', $thisId);
                 $prepare->execute();
-                $row = $prepare->fetch();
-                $fileOriginalName = $row->secondFileName;
-                $thisFile->size = $row->size;
-                $thisFile->ext = $row->ext;
+                $each = $prepare->fetch();
+                $thisFile = new File();
+                $timeStamp = $each->firstFileName;
+                $fileOriginalName = $each->secondFileName;
+                $thisFile->size = $each->size;
+                $thisFile->ext = $each->ext;
                 $thisFile->originalName = encrypt_decrypt('decrypt',$fileOriginalName);
-            
-                $thisFile->nameForLink = $file.'.'.$thisFile->ext;
+                $thisFile->nameForLink = encrypt_decrypt('decrypt', $timeStamp);
                 foreach ($scanned_directory_0 as $value) {
-                    if ($value == $thisFile->nameForLink) {
+                    if ($value == $thisFile->nameForLink.'.'.$thisFile->ext) {
                         $isFound = true;
                         $thisFile->thisOld = '24hrs';
                     }
                 }
                 foreach ($scanned_directory_1 as $value) {
-                    if ($value == $thisFile->nameForLink) {
+                    if ($value == $thisFile->nameForLink.'.'.$thisFile->ext) {
                         $isFound = true;
                         $thisFile->thisOld = '2j';
                     }
                 }
                 foreach ($scanned_directory_2 as $value) {
-                    if ($value == $thisFile->nameForLink) {
+                    if ($value == $thisFile->nameForLink.'.'.$thisFile->ext) {
                         $isFound = true;
                         $thisFile->thisOld = '1s';
                     }
                 }
                 foreach ($scanned_directory_3 as $value) {
-                    if ($value == $thisFile->nameForLink) {
+                    if ($value == $thisFile->nameForLink.'.'.$thisFile->ext) {
                         $isFound = true;
                         $thisFile->thisOld = '2s';
                     }
@@ -113,6 +123,6 @@
                 $arrayOfFiles[] = $thisFile;
             }
             $arrayIsImg = array('jpeg', 'jpg', 'png', 'tif', 'gif', 'bmp', 'webp', 'eps', 'svg');
-            $arrayIsVideo = array('mp4', 'webm');   
+            $arrayIsVideo = array('mp4', 'webm');
         }
     }

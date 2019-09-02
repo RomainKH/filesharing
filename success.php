@@ -4,9 +4,10 @@
   include './assets/functions.php';
   $fileNameForLink = $_SESSION['access'][0];
   $fileNameNoExt = $_SESSION['name'];
+  $idFile = $_SESSION['id'];
   if ($fileNameForLink == null) {
     unset($_SESSION['previous_location']);
-    header('location: ./page?=notfound');
+    header('location: ./d?=notfound');
     exit;
   }
 ?>
@@ -83,7 +84,7 @@
           let doubloon = false
           for (let i = 0; i < localData.length; i++) {
 
-            if(localData[i].link == '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>') {
+            if(localData[i].link == '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>') {
               doubloon = true
               let renamedFile = document.querySelectorAll('.flex__multiples .block__file div > div input')
               let allNames = ''
@@ -95,13 +96,13 @@
             }
           }
           if (doubloon == false) {
-            let objLink = {link : '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+            let objLink = {link : '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>' }
             localData.push(objLink)
             localStorage.setItem('theLinksCreated', JSON.stringify(localData))
           }
         } else {
           localData = new Array()
-          let objLink = {link : '<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>', name : '<?= $fileNameNoExt[0] ?>' }
+          let objLink = {link : '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>' }
           localData.push(objLink)
           localStorage.setItem('theLinksCreated', JSON.stringify(localData))
         }
@@ -114,12 +115,12 @@
       <!-- LIENS DYNAMIQUE A METTRE A JOUR EN FONCTION DE L'ADRESSE SERVER -->
       <div class="buttons">
         <div class="cta__links">
-          <a id="<?=$fileNameForLink?>" class="link__download  white__btn" href="page?=<?=encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>">Accès au téléchargement</a>
+          <a id="<?=$fileNameForLink?>" class="link__download  white__btn" href="d?=<?=hash('crc32b',$idFile).$howMuchFiles?>">Accès au téléchargement</a>
           <button class="white__btn">Envoyer le lien par mail</button>
         </div>
         <!-- LIENS DYNAMIQUE A METTRE A JOUR EN FONCTION DE L'ADRESSE SERVER -->
         <div class="cta__link">
-          <input type="text" value="<?=$domain.'page?='.encrypt_decrypt('encrypt',$fileNameForLink.'&'.$howMuchFiles)?>" id="linkShare">
+          <input type="text" value="<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>" id="linkShare">
           <button class="blue__btn" onclick="copyLink()">Copier le lien de téléchargement</button> 
           <div>
             <input id="checkdl" type="checkbox">

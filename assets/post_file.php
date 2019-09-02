@@ -59,7 +59,7 @@ if(isset($_POST['upload'])) {
           $fileNameNew = $fileNameForLinkMultiple.'.'.$fileActualExt;
           $fileDestination = '../uploads/'.$numberOfDays.'/'.$fileNameNew;
           $fileNameOriginal = encrypt_decrypt('encrypt',$fileNameNoExt);
-          $fileEnc = hash('ripemd160',$fileNameForLinkMultiple);
+          $fileEnc = encrypt_decrypt('encrypt',$fileNameForLinkMultiple);
           move_uploaded_file($fileTmpName, $fileDestination);
           /** insert every infos in session & db */
           $_SESSION['fileSize'][] = $fileSize;
@@ -88,6 +88,13 @@ if(isset($_POST['upload'])) {
               }
               $_SESSION['access'][$j] = $uniqId;
             }
+            $prepare = $pdo->prepare(
+              'SELECT id FROM datafiles WHERE firstFileName = :firstFileName'
+            );
+            $prepare->bindValue('firstFileName', $filesEnc[0]);
+            $prepare->execute();
+            $row = $prepare->fetch();
+            $_SESSION['id'] = $row->id;
             header('location: ../success');
             exit;
           }

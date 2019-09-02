@@ -10,13 +10,13 @@
     $_SESSION['name'][$formatedIndex] = $newName;
     echo $newName;
     $newNameEnc = encrypt_decrypt('encrypt',$newName);
-    $uniqEnc = hash('ripemd160',$uniqName.$index);
+    $idFile = $_SESSION['id'] + $formatedIndex;
     
     $prepare = $pdo->prepare(
-        'UPDATE datafiles SET secondFileName = :secondFileName WHERE firstFileName = :firstFileName'
+        'UPDATE datafiles SET secondFileName = :secondFileName WHERE id = :id'
     );
     $prepare->bindValue('secondFileName', $newNameEnc);
-    $prepare->bindValue('firstFileName', $uniqEnc);
+    $prepare->bindValue('id', $idFile);
     $prepare->execute();
     $everyFilesName = array();
     $realNames = array();

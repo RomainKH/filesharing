@@ -31,7 +31,8 @@
 **/
 html {
   scroll-behavior: smooth;
-  background: var(--white-blue) no-repeat center center fixed; 
+  background: var(--white-blue) no-repeat center center fixed;
+  overflow-y: hidden; 
 }
 .simplebar-wrapper + .simplebar-track.simplebar-vertical > div.simplebar-scrollbar.simplebar-visible::before {
   display: none;

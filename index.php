@@ -5,11 +5,7 @@
   if (isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0') {
       unset($_SESSION['error']);
   }
-
-  $arrayIp = array();
-  foreach (range(0, 255) as $number) {
-    $arrayIp[] = '192.168.70.0';
-  }
+  
   // files & db to delete
   checkFilesToDelete();
   $prepare = $pdo->prepare(
@@ -28,8 +24,16 @@
     " DELETE FROM datafiles WHERE createdAt < NOW() - INTERVAL 14.5 DAY AND expiration = '2s' "
   );
   $prepare->execute();
-  
+
   // check ip if is intern to innocean or not
+  $arrayIp = array();
+  foreach (range(0, 255) as $number) {
+    $arrayIp[] = '192.168.70.'.$number;
+  }
+  $userIp = $_SERVER['REMOTE_ADDR'];
+  if (!in_array($userIp, $arrayIp)) {
+      exit('Unauthorized');
+  }
   
 ?>
 <!DOCTYPE html>
