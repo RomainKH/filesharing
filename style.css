@@ -1,17 +1,15 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700&display=swap");
 
 :root {
-  --yellow: #F0AF35;
-  --orange: #f15a22;
   --red: #FF4242;
   --white: #FFF9F9;
   --white-blue: #F2F8FA;
   --transparent-w-b: #f2f8fa73;
-  --light-grey: #C4C4C4;
+  --light-grey: #e4e4e0;
   --grey: #4E4E4E;
+  --light-o-grey: #efefef;
   --black: #1A1919;
   --light-blue: #DAECFA;
-  --blue: #0EA0D0;
   --black-blue: #0E71DA;
   --black-layer: rgba(78, 78, 78, 0.8);
 }
@@ -31,7 +29,7 @@
 **/
 html {
   scroll-behavior: smooth;
-  background: var(--white-blue) no-repeat center center fixed;
+  background: var(--grey) no-repeat center center fixed;
   overflow-y: hidden; 
 }
 .simplebar-wrapper + .simplebar-track.simplebar-vertical > div.simplebar-scrollbar.simplebar-visible::before {
@@ -104,7 +102,7 @@ h1, h2, h3, h4, h5 {
 }
 .blue__btn {
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   color: var(--white);
   font-weight: bold;
   font-size: 13px;
@@ -116,7 +114,7 @@ h1, h2, h3, h4, h5 {
 .white__btn {
   border-radius: 5px;
   background: var(--white);
-  color: var(--blue);
+  color: var(--black-blue);
   font-weight: bold;
   font-size: 13px;
   line-height: 18px;
@@ -146,7 +144,6 @@ nav {
   background: var(--white);
 }
 nav > a {
-  color: var(--orange);
   font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
   font-size: 31px;
@@ -156,8 +153,8 @@ nav > a {
 }
 nav > a > svg{
   height: calc(37px - 4px*2);
-  width: 50%;
-  stroke: var(--orange);
+  width: 100%;
+  stroke: var(--black);
 }
 nav .questionmark {
   position: relative;
@@ -165,7 +162,7 @@ nav .questionmark {
 nav button{
   width: 38px;
   height: 38px;
-  background: linear-gradient(180deg, var(--orange) 0%, var(--yellow) 100%);
+  background: var(--grey);
   border-radius: 50px;
   border: none;
   outline: none;
@@ -229,19 +226,19 @@ nav button:hover {
   top: 0;
   left: 0;
   position: absolute;
-  background: var(--white-blue);
+  background: var(--grey);
   width: 100%;
   height: 100%;
 }
 .container__ct .blocks__ct {
   position: relative;
   top: 190px;
-  background: var(--white-blue);
+  background: var(--grey);
   padding-bottom: 30px;
 }
 .container__ct .block {
   z-index: 1;
-  background: var(--light-blue);
+  background: var(--white);
   position: relative;
   margin: 0 auto;
   border-radius: 5px;
@@ -310,7 +307,7 @@ nav button:hover {
   width: 100%;
   height: 100%;
   position: absolute;
-  background: linear-gradient(180deg, var(--orange), var(--yellow));
+  background: linear-gradient(180deg, var(--grey), var(--light-grey));
   border-radius: 5px;
   background-size: 100% 100%;
   transition: .6s cubic-bezier(0,.9,.44,1.15);
@@ -374,12 +371,15 @@ nav button:hover {
   padding: 3px 5px;
   cursor: pointer;
   position: relative;
-  background: white;
+  background: var(--light-grey);
   width: 45px;
   height: 12px;
   font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 10px;
 }
+.select__container > .container > p{
+  color: var(--white);
+} 
 .select__container label input {
   position: absolute;
   width: 1px;
@@ -433,7 +433,7 @@ nav button:hover {
   position: absolute;
   width: 100%;
   height: 0%;
-  background: var(--blue);
+  background: var(--black-blue);
   bottom: 0;
   transition: .3s ease;
 }
@@ -455,7 +455,7 @@ nav button:hover {
   transition: .6s cubic-bezier(0,.9,.44,1.15);
 }
 .block.block__upload .progress__container + button.is__displayed {
-  background: var(--blue);
+  background: var(--black-blue);
 }
 .block__upload .exp__upload__right {
   display: flex;
@@ -491,7 +491,7 @@ nav button:hover {
 }
 .simplebar-scrollbar::before {
   z-index: 1;
-  background: var(--orange);
+  background: var(--grey);
   width: 100%;
 }
 .block.block__links .link__list .link:first-child {
@@ -509,7 +509,7 @@ nav button:hover {
   width: 80%;
   height: calc(44px - 9px*2);
   margin: 15px auto;
-  background: var(--light-blue);
+  background: var(--light-grey);
 }
 .block.block__links .link__list .link > span {
   position: relative;
@@ -527,7 +527,7 @@ nav button:hover {
 }
 .block.block__links .link__list .link > span + button {
   font-size: 10px;
-  background: var(--blue);
+  background: var(--black-blue);
   color: var(--white);
   border-radius: 5px;
   padding: 4px 15px;
@@ -607,7 +607,7 @@ nav button:hover {
 }
 /** PAGE SUCCESS **/
 body.success {
-  background: var(--white-blue);
+  background: var(--grey);
 }
 .success__blocks {
   position: relative;
@@ -634,7 +634,7 @@ body.success {
   width: calc(430px - 9px*2);
   height: calc(80px - 9px*2);
   margin: 30px auto;
-  background: var(--light-blue);
+  background: var(--light-o-grey);
 }
 .flex__multiples .block__file svg {
   stroke: var(--grey);
@@ -692,7 +692,7 @@ body.success {
   left: 0;
   width: 20px;
   height: 2px;
-  background: var(--blue);
+  background: var(--black-blue);
   border-radius: 5px;
   transform: rotate(-45deg);
 }
@@ -703,7 +703,7 @@ body.success {
   right: 50%;
   width: 10px;
   height: 2px;
-  background: var(--blue);
+  background: var(--black-blue);
   border-radius: 5px;
   transform: rotate(45deg);
 }
@@ -726,7 +726,7 @@ body.success {
   width: 604px;
   height: 200px;
   margin: 0 auto;
-  background: var(--light-blue);
+  background: var(--light-o-grey);
   border-radius: 5px;
 }
 .access__file h3 {
@@ -803,7 +803,7 @@ body.success {
   width: 3px;
   height: 8px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   left: 8px;
   top: 6px;
   transform-origin: bottom;
@@ -815,7 +815,7 @@ body.success {
   width: 3px;
   height: 13px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   left: 7px;
   top: 2px;
   transform-origin: bottom;
@@ -905,7 +905,7 @@ body.success {
   padding: 10px;
   font-size: 13px;
   color: var(--black);
-  border: 2px var(--blue) solid;
+  border: 2px var(--black-blue) solid;
   border-radius: 5px;
   z-index: 0;
 }
@@ -922,7 +922,7 @@ body.success {
 
 /*** PAGE DOWNLOAD & FILE NOT FOUND ***/
 .background {
-  background: var(--white-blue);
+  background: var(--grey);
   height: 100vh;
   width: 100%;
 }
@@ -947,7 +947,7 @@ body.success {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  background: var(--light-blue);
+  background: var(--light-o-grey);
   border-radius: 5px;
   transition: .6s cubic-bezier(0,.9,.44,1.15);
 }
@@ -1071,7 +1071,7 @@ body.success {
   width: 40px;
   height: 3px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   transform: rotate(60deg);
   top: 50%;
   left: 0;
@@ -1082,7 +1082,7 @@ body.success {
   width: 40px;
   height: 3px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   transform: rotate(-60deg);
   top: 50%;
   left: 0;
@@ -1093,7 +1093,7 @@ body.success {
   width: 40px;
   height: 3px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   transform: rotate(60deg);
   top: 50%;
   left: 0;
@@ -1104,7 +1104,7 @@ body.success {
   width: 40px;
   height: 3px;
   border-radius: 5px;
-  background: var(--blue);
+  background: var(--black-blue);
   transform: rotate(-60deg);
   top: 50%;
   left: 0;
