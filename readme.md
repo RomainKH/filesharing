@@ -4,6 +4,10 @@ Hi! I've created this project for an internship I did in the summer of 2019. Bas
 
 To set-up the project you have to go & modify setup.php & config.php in `./assets/` and then just run the project on a local server or server.
 Then in order to complete the set-up you need to build a database this way
+
+&nbsp;
+&nbsp;
+
 ![database exemple](https://raw.githubusercontent.com/RomainKH/filesharing/master/database.png)
 
 ## Features
