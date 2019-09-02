@@ -118,7 +118,7 @@ if(isset($_POST['upload'])) {
     }
   }
 } else {
-  $_SESSION['error'] = `Erreur interne appelez le 911 ou Damien en cas d'urgence`;
+  $_SESSION['error'] = `Erreur interne appelez le 911 ou Romain en cas d'urgence`;
   header('location: ../');
   exit;
 }
