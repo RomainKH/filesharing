@@ -6,7 +6,6 @@ To set-up the project you have to go & modify setup.php & config.php in `./asset
 Then in order to complete the set-up you need to build a database this way
 
 &nbsp;
-&nbsp;
 
 ![database exemple](https://raw.githubusercontent.com/RomainKH/filesharing/master/database.png)
 
