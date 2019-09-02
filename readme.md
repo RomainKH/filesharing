@@ -3,6 +3,8 @@
 Hi! I've created this project for an internship I did in the summer of 2019. Basically it's a Dropbox-like and it is fully coded in php and js, just a small use of jquery for ajax usage.
 
 To set-up the project you have to go & modify setup.php & config.php in `./assets/` and then just run the project on a local server or server.
+Then in order to complete the set-up you need to build a database this way
+![database exemple](../database.png)
 
 ## Features
 
