@@ -1,9 +1,13 @@
 <?php
 // include functions
 include 'config.php';
+include 'setup.php';
 include 'functions.php';
 $_SESSION['previous_location'] = 'post';
 $error = '';
+unset($_SESSION['thumbToGenerate']);
+ini_set('max_execution_time', 300);
+set_time_limit(300);
 // files & db to delete
 checkFilesToDelete();
 $prepare = $pdo->prepare(
@@ -41,7 +45,12 @@ if(isset($_POST['upload'])) {
   $uniqId = $fileNameForLink;
   $everyFilesName = array();
   $realNames = array();
+  $totalFilesSize = false;
+  for ($p=0; $p < count($arrayFiles); $p++) {
+    $totalFilesSize += $arrayFiles[$p]['size'];
+  }
   for ($i=0; $i < count($arrayFiles); $i++) { 
+    $arrayPsdToConvert = array();
     $fileName = $arrayFiles[$i]['name'];
     $fileTmpName = $arrayFiles[$i]['tmp_name'];
     $fileSize = $arrayFiles[$i]['size'];
@@ -54,13 +63,16 @@ if(isset($_POST['upload'])) {
     $fileNameNoExt = str_replace ( '.'.$fileActualExt, '',$fileName);
     if (!in_array($fileActualExt, $allowed)) {
       if ($fileError === 0) {
-        if ($fileSize < 1000000000) {
+        if ($totalFilesSize < $totalLimitUpload) {
           $fileNameForLinkMultiple = $fileNameForLink.'__'.$i;
           $fileNameNew = $fileNameForLinkMultiple.'.'.$fileActualExt;
           $fileDestination = '../uploads/'.$numberOfDays.'/'.$fileNameNew;
           $fileNameOriginal = encrypt_decrypt('encrypt',$fileNameNoExt);
           $fileEnc = encrypt_decrypt('encrypt',$fileNameForLinkMultiple);
           move_uploaded_file($fileTmpName, $fileDestination);
+          if (($fileActualExt == 'psd' || $fileActualExt == 'ai' || $fileActualExt == 'psb') && $fileSize < 900000000) {
+            thumbGenerator('../uploads/'.$numberOfDays.'/', $fileNameForLinkMultiple, $fileActualExt);
+          }
           /** insert every infos in session & db */
           $_SESSION['fileSize'][] = $fileSize;
           $_SESSION['access'][] = $fileNameForLink;
@@ -82,10 +94,7 @@ if(isset($_POST['upload'])) {
               $prepare->bindValue('expiration', $numberOfDays);
               $prepare->bindValue('size', $_SESSION['fileSize'][$j]);
               $prepare->execute();
-              if ($j > 0 && $j == count($arrayFiles)-1) {
-                $destination = '../uploads/'.$numberOfDays;
-                zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
-              }
+              $_SESSION['nbDays'] = $numberOfDays;
               $_SESSION['access'][$j] = $uniqId;
             }
             $prepare = $pdo->prepare(
@@ -118,7 +127,7 @@ if(isset($_POST['upload'])) {
     }
   }
 } else {
-  $_SESSION['error'] = `Erreur interne appelez le 911 ou Romain en cas d'urgence`;
+  $_SESSION['error'] = `Erreur interne appelez le 911 en cas d'urgence`;
   header('location: ../');
   exit;
 }

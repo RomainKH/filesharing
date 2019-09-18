@@ -11,7 +11,7 @@ session_start();
 
 // a reconfigurer en fonction du server et de la base de données
 define('DB_HOST', 'localhost');
-define('DB_PORT', '8888');
+define('DB_PORT', '8080');
 define('DB_NAME', 'upload');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');

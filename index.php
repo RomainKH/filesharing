@@ -2,10 +2,6 @@
   include './assets/config.php';
   include './assets/functions.php';
   $_SESSION['previous_location'] = 'homepage';
-  if (isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0') {
-      unset($_SESSION['error']);
-  }
-  
   // files & db to delete
   checkFilesToDelete();
   $prepare = $pdo->prepare(
@@ -26,14 +22,14 @@
   $prepare->execute();
 
   // check ip if is intern to innocean or not
-  //$arrayIp = array();
-  //foreach (range(0, 255) as $number) {
-  //  $arrayIp[] = '192.168.70.'.$number;
-  //}
-  //$userIp = $_SERVER['REMOTE_ADDR'];
-  //if (!in_array($userIp, $arrayIp)) {
-  //    exit('Unauthorized');
-  //}
+  // $arrayIp = array();
+  // foreach (range(0, 255) as $number) {
+  //   $arrayIp[] = '0.0.0.'.$number;
+  // }
+  // $userIp = $_SERVER['REMOTE_ADDR'];
+  // if (!in_array($userIp, $arrayIp)) {
+  //     exit('Unauthorized');
+  // }
   
 ?>
 <!DOCTYPE html>
@@ -42,7 +38,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>RK File Share</title>
+      <title>File Sharing Tool</title>
       <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,700&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css">
       <link rel="stylesheet" href="style.css">
@@ -125,7 +121,7 @@
                 <div class="link__list__exp">
                     <p>
                         Ici vous retrouverez tout les liens que vous avez créés avec
-                        <mark>RK File Share</mark>, vous pouvez en supprimez certains et même tous les enlever si vous le désirez.
+                        <mark>File Share</mark>, vous pouvez en supprimez certains et même tous les enlever si vous le désirez.
                     </p>
                     <button>Supprimez tout</button>
                 </div>
@@ -147,7 +143,9 @@
         </div>
         <?php } ?>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
+    <script src="./assets/jquery.min.js"></script>
     <script src="./assets/index.js"></script>
   </body>
 </html>

@@ -18,18 +18,3 @@
     $prepare->bindValue('secondFileName', $newNameEnc);
     $prepare->bindValue('id', $idFile);
     $prepare->execute();
-    $everyFilesName = array();
-    $realNames = array();
-    $uniqId = $_SESSION['access'][0];
-    for ($i=0; $i < count($_SESSION['name']); $i++) { 
-        $destination = '../uploads/'.$old;
-        array_push($everyFilesName, '../uploads/'.$old.'/'.$_SESSION['access'][0].'__'.$i.'.'.$_SESSION['ext'][$i]);
-        array_push($realNames, $_SESSION['name'][$i].'.'.$_SESSION['ext'][$i]);
-    }
-    
-    if (count($everyFilesName) > 1) {
-        zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
-        $deleteZip = '../uploads/'.$old.'/'.$_SESSION['access'][0].'.zip';
-        unlink($deleteZip);
-        zipMultiFile($everyFilesName,$uniqId,$destination,$realNames);
-    }

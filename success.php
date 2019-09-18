@@ -1,11 +1,14 @@
 <?php
   include './assets/setup.php';
   include './assets/config.php';
-  include './assets/functions.php';
+  include './assets/functions.php';  
   $fileNameForLink = $_SESSION['access'][0];
   $fileNameNoExt = $_SESSION['name'];
   $idFile = $_SESSION['id'];
-  if ($fileNameForLink == null) {
+  if (isset($_SESSION['thumbToGenerate'])) {
+    $thumb = $_SESSION['thumbToGenerate'];
+  }
+  if ($_SESSION['access'][0] == null) {
     unset($_SESSION['previous_location']);
     header('location: ./d?=notfound');
     exit;
@@ -83,8 +86,7 @@
           localData = JSON.parse(localData)
           let doubloon = false
           for (let i = 0; i < localData.length; i++) {
-
-            if(localData[i].link == '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>') {
+            if(localData[i].link == '<?=str_replace('success','',$domain).'d?='.hash('crc32b',$idFile).$howMuchFiles?>') {
               doubloon = true
               let renamedFile = document.querySelectorAll('.flex__multiples .block__file div > div input')
               let allNames = ''
@@ -96,13 +98,13 @@
             }
           }
           if (doubloon == false) {
-            let objLink = {link : '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>' }
+            let objLink = {link : '<?=str_replace('success','',$domain).'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>', expiration: '<?= $_SESSION['nbDays'] ?>', time: Math.round(Date.now()/10000) }
             localData.push(objLink)
             localStorage.setItem('theLinksCreated', JSON.stringify(localData))
           }
         } else {
           localData = new Array()
-          let objLink = {link : '<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>' }
+          let objLink = {link : '<?=str_replace('success','',$domain).'d?='.hash('crc32b',$idFile).$howMuchFiles?>', name : '<?= $fileNameNoExt[0] ?>', expiration: '<?= $_SESSION['nbDays'] ?>', time: Math.round(Date.now()/10000) }
           localData.push(objLink)
           localStorage.setItem('theLinksCreated', JSON.stringify(localData))
         }
@@ -120,7 +122,7 @@
         </div>
         <!-- LIENS DYNAMIQUE A METTRE A JOUR EN FONCTION DE L'ADRESSE SERVER -->
         <div class="cta__link">
-          <input type="text" value="<?=$domain.'d?='.hash('crc32b',$idFile).$howMuchFiles?>" id="linkShare">
+          <input type="text" value="<?=str_replace('success','',$domain).'d?='.hash('crc32b',$idFile).$howMuchFiles?>" id="linkShare">
           <button class="blue__btn" onclick="copyLink()">Copier le lien de téléchargement</button> 
           <div>
             <input id="checkdl" type="checkbox">
@@ -132,6 +134,7 @@
     </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.12/push.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
 <script src="./assets/jquery.min.js"></script>
 <script src="./assets/success.js"></script>

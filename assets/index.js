@@ -27,14 +27,24 @@ const uploadFile = () => {
   percentage__span.style.display = 'block'
   setTimeout(() => {
     svg__file.style.opacity = 0
-    percentage__span.style.opacity = 1      
+    percentage__span.style.opacity = 1
+    var f = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛']
+    function loop() {
+      location.hash = f[Math.floor((Date.now()/100)%f.length)]
+      setTimeout(loop, 50)
+    }
+    loop()
   }, 10)
 }
 const progressHandler = (event) => {
   let percent = (event.loaded / event.total) * 100
-  progress__bar.style.height = `${Math.round(percent)}%`
-  percentage__span.innerHTML = `${Math.round(percent)}%`
-  progress__bar.value = Math.round(percent)
+  progress__bar.style.height = `${Math.round(percent) - 1}%`
+  if (Math.round(percent) > 1) {
+    percentage__span.innerHTML = `${Math.round(percent) - 1}%`
+  } else {
+    percentage__span.innerHTML = `${Math.round(percent)}%`
+  }
+  progress__bar.value = Math.round(percent) - 1
 }
 const completeHandler = (event) => {
   progress__bar.value = 100
@@ -66,6 +76,18 @@ let local = localStorage.getItem('theLinksCreated'),
     whereToPutLinkIn = document.querySelector('.simplebar-content')
 if (local != undefined || local != null) {
   local = JSON.parse(local)
+  for (let a = 0; a < local.length; a++) {
+    if (local[a].expiration == '24hrs' && ((Date.now()/10000) - local[a].time) >= (6*60)*24) {
+      local.splice(a, 1)
+    } else if (local[a].expiration == '2j' && ((Date.now()/10000) - local[a].time) >= ((6*60)*24)*2) {
+      local.splice(a, 1)
+    } else if (local[a].expiration == '1s' && ((Date.now()/10000) - local[a].time) >= ((6*60)*24)*7) {
+      local.splice(a, 1)
+    } else if (local[a].expiration == '2s' && ((Date.now()/10000) - local[a].time) >= ((6*60)*24)*14) {
+      local.splice(a, 1)
+    }
+  }
+  localStorage.setItem('theLinksCreated', JSON.stringify(local))
   for (let o = 0; o < local.length; o++) {
     const divLink = document.createElement('div'),
           inputLink = document.createElement('input'),
@@ -149,7 +171,8 @@ const filesSize = () => {
       total__size += input__file__in.files[i].size
     }
   }
-  if (total__size != 0 && total__size > 10000000) {
+  //change the value for warning display
+  if (total__size != 0 && total__size > 2000000000) {
     error__filesize.style.display = 'block'
     setTimeout(() => {
       error__filesize.style.opacity = 1
@@ -207,3 +230,45 @@ for (let xy = 0; xy < rename__btn.length; xy++) {
     }, 901);
   })
 }
+
+// ask for authorization push notifications
+if (Push.Permission.has() == false) {
+  Push.create("File Sharing",{
+    body: "Mettez en ligne vos fichiers en toute tranquillité.",
+    icon: '../from/favicon.png',
+    timeout: 3500,
+    onShow: function() {
+      setTimeout(function() {
+        Push.create("File Sharing",{
+          body: "Recevez une notification quand l'upload est fini!",
+          icon: '../from/favicon.png',
+          timeout: 4500,
+          onClick: function () {
+            window.focus()
+            this.close()
+          }
+        })
+      }, 3650)
+    },
+    onClick: function () {
+      window.focus()
+      this.close()
+    },
+    fallback: function(payload) {
+      window.alert('Les notifications ne sont pas disponibles pour votre navigateur')
+    }
+  })
+}
+
+// $_SESSION['verif']
+$(document).ready(function () {
+  $(`.close__error`).click(function () {
+    $.ajax({
+      type: 'POST',
+      url: './assets/closeerror.php',
+      success: function (data) {
+        console.log(data)
+      }
+    })
+  })
+})

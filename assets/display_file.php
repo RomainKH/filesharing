@@ -54,7 +54,10 @@
 
     $replaced = str_replace($path.'d?=', '', $url);
     $access = true;
-    if ($replaced == 'notfound') {
+    if ($replaced == 'notfound' ) {
+        $access = false;
+    }
+    else if (strlen($replaced) < 9) {
         $access = false;
     }
     if ($access == true) {
@@ -124,5 +127,7 @@
             }
             $arrayIsImg = array('jpeg', 'jpg', 'png', 'tif', 'gif', 'bmp', 'webp', 'eps', 'svg');
             $arrayIsVideo = array('mp4', 'webm');
+            $arrayIsCode = array('html', 'css', 'js', 'php', 'scss', 'sass', 'sql');
+            $arrayIsAdobe = array('psd', 'ai', 'psb');
         }
     }

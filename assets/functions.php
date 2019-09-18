@@ -49,18 +49,6 @@
     return $output;
   }
 
-  function zipMultiFile($array,$zipname,$directory,$newNames) {
-    $files = $array;
-    $zipFilesName = $directory.'/'.$zipname.'.zip';
-    $zip = new ZipArchive;
-    $zip->open($zipFilesName, ZipArchive::CREATE);
-    for ($i=0; $i < count($files); $i++) { 
-      $new_filename = $newNames[$i];
-      $zip->addFile($files[$i], $new_filename);
-    }
-    $zip->close();
-  }
-
   function reArrayFiles($file) {
     $array = array();
     $file_count = count($file['name']);
@@ -74,3 +62,33 @@
     return $array;
   }
   
+  function thumbGenerator($dir,$tmpName,$fileType){
+    $saveFileType = ".png";
+    $imagePath = $dir.$tmpName.".".$fileType;
+    $image = new Imagick();
+    $image->readimage($imagePath);
+    if($fileType == "psd"){
+        $image->setIteratorIndex(0);
+    }
+    $dimensions = $image->getImageGeometry();
+    $width = $dimensions['width'];
+    $height = $dimensions['height'];
+    $maxWidth = 720;
+    $maxHeight = 720;
+    if($height > $width){
+        //Portrait
+        if($height > $maxHeight)
+            $image->thumbnailImage(0, $maxHeight);
+            $dimensions = $image->getImageGeometry();
+            if($dimensions['width'] > $maxWidth){
+                $image->thumbnailImage($maxWidth, 0);
+            }
+    }elseif($height < $width){
+        //Landscape
+        $image->thumbnailImage($maxWidth, 0);
+    }else{
+        //square
+        $image->thumbnailImage($maxWidth, 0);
+    }
+    $image->writeImage($dir . $tmpName.$saveFileType);
+  }

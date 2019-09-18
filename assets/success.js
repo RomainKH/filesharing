@@ -1,12 +1,16 @@
 const input__rename = document.querySelectorAll('.file__name'),
       link = document.querySelector('.link__download'),
-      block__file = document.querySelectorAll('.block__file')
+      block__file = document.querySelectorAll('.block__file'),
+      bg = document.querySelector('.background'),
+      buttons__rename = document.querySelectorAll('.flex__multiples .block__file button')
 
 const copyLink = () => {
   let copyText = document.querySelector('#linkShare')
   copyText.select()
   document.execCommand('copy')
 }
+let allowEnter = false,
+    indexEnter = false
 for (let k = 0; k < block__file.length; k++) {
   $(document).ready(function () {
     $(`#button${k}`).click(function () {
@@ -20,7 +24,22 @@ for (let k = 0; k < block__file.length; k++) {
       })
     })
   })
+  bg.addEventListener('click', () => {
+    allowEnter = false
+  })
+  input__rename[k].addEventListener('click', () => {
+    setTimeout(() => {
+      indexEnter = k
+      allowEnter = true
+    }, 1)
+  })
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.key == 'Enter' && allowEnter == true) {
+    buttons__rename[indexEnter].click()
+  }
+}, false)
 
 let background__mail__div = 0
 const btn__mail = document.querySelector('.cta__links > button.white__btn')
@@ -29,11 +48,9 @@ btn__mail.addEventListener('click', () => {
         form__mail = document.createElement('div'),
         btn__quit = document.createElement('button'),
         input__destination = document.createElement('input'),
-        input__ur__mail = document.createElement('input'),
         message = document.createElement('textarea'),
         submit = document.createElement('button'),
         label__destination = document.createElement('label'),
-        label__ur__mail = document.createElement('label'),
         label__message = document.createElement('label'),
         div__dest = document.createElement('div'),
         div__ur__mail = document.createElement('div'),
@@ -61,16 +78,7 @@ btn__mail.addEventListener('click', () => {
   input__destination.type = 'email'
   input__destination.id = 'destination__mail'
   input__destination.name = 'destination__mail'
-  input__destination.placeholder = 'exemple@innocean.eu'
-  div__ur__mail.appendChild(label__ur__mail)
-  label__ur__mail.innerHTML = 'Votre e-mail'
-  label__ur__mail.setAttribute('for', 'ur__mail')
-  label__ur__mail.classList.add('mail__label')
-  div__ur__mail.appendChild(input__ur__mail)
-  input__ur__mail.type = 'email'
-  input__ur__mail.id = 'ur__mail'
-  input__ur__mail.name = 'ur__mail'
-  input__ur__mail.placeholder = 'exemple@innocean.eu'
+  input__destination.placeholder = 'exemple@email.com'
   div__message.appendChild(label__message)
   label__message.innerHTML = 'Votre message'
   label__message.setAttribute('for', 'message__mail')
@@ -84,6 +92,7 @@ btn__mail.addEventListener('click', () => {
   submit.id = 'submit__mail'
   submit.name = 'mail'
   submit.innerHTML = 'Envoyer le mail'
+  submit.setAttribute('onclick','sendMail()')
   setTimeout(() => {
     background__mail.style.opacity = 1
   }, 1)
@@ -100,23 +109,31 @@ const handleInteraction = (el, btn) => {
     }, 600)
   })
 }
-var data = { 
-  destination__mail: $(`#destination__mail`).val(),
-  ur__mail: $(`#ur__mail`).val(),
-  message__mail: $(`#message__mail`).val()
-}
-$(document).ready(function () {
-  $(`#submit__mail`).click(function () {
-    $.ajax({
-      type: 'POST',
-      url: './assets/mail.php',
-      data: data,
-      success: function (data) {
-        console.log(data)
-      }
+function sendMail() {
+  const destination__mail = document.querySelector('#destination__mail')
+  if ($(`#destination__mail`).val() != null && $(`#destination__mail`).val().indexOf('@') !== -1 && $(`#destination__mail`).val().indexOf('.') !== -1 && $(`#destination__mail`).val() != undefined && $(`#destination__mail`).val() != '') {
+    $(document).ready(function() {
+      destination__mail.style.border = "2px var(--blue) solid"
+      $.ajax({
+        type: 'POST',
+        url: './assets/mail.php',
+        data: {destination__mail: $(`#destination__mail`).val(),message__mail: $(`#message__mail`).val(), url: $(`#linkShare`).val()},
+        success: function (data) {
+          const bg__mail = document.querySelector('.bg__mail'),
+                mail__display = document.querySelector('.form__mail')
+          bg__mail.style.opacity = 0
+          mail__display.style.transform = 'translate(-50%, -100%)'
+          setTimeout(() => {
+            bg__mail.remove()
+          },1200)
+        }
+      })
     })
-  })
-})
+  } else {
+    destination__mail.style.border = "2px var(--red) solid"
+    alert('Veuillez entrer une adresse email valide')
+  }
+}
 
 const checkbox__autodl = document.querySelector('#checkdl')
 checkbox__autodl.addEventListener('click', () => {
@@ -126,7 +143,8 @@ checkbox__autodl.addEventListener('click', () => {
     linkText.value = linkText.value.replace('&download','')
   } else {
     checkbox__autodl.classList.add('active')
-    linkText.value = `${linkText.value}&download`
+    let newValue = `${linkText.value}&download`
+    linkText.value = newValue
   }
 })
 
@@ -161,3 +179,12 @@ for (let xy = 0; xy < rename__btn.length; xy++) {
     }, 901);
   })
 }
+Push.create("File Sharing",{
+  body: "Votre mise en ligne est terminé!",
+  icon: '../from/favicon.png',
+  timeout: 4500,
+  onClick: function () {
+    window.focus()
+    this.close()
+  }
+})
